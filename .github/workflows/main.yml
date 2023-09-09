@@ -43,3 +43,28 @@ jobs:
         echo "BUILD_TARGET=${{ matrix.build_target }}" >> $GITHUB_ENV
         echo "FFMPEG_CONFIGURE_ARGS=${{ matrix.ffmpeg_configure_args }}" >> $GITHUB_ENV
         echo "VERSION=$(cat app/version.txt)" >> $GITHUB_ENV
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential qt5-default
+
+    - name: Configure
+      run: |
+        qmake -project
+        qmake
+
+    - name: Build
+      run: make
+
+    - name: Test
+      run: make test
+
+    - name: Install
+      run: sudo make install
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.3
+      with:
+        # Artifact name
+        name: Artifact
